@@ -75,8 +75,8 @@ export async function signInUser (req, res) {
             userId: accountData._id,
             token
         });
-        
-        return res.status(200).send(token);
+        console.log(accountData.name);
+        return res.status(200).send({token, name: accountData.name});
 
     } catch (error) {
         return res.status(500).send(error);

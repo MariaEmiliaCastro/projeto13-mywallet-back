@@ -44,8 +44,17 @@ export async function getAllRecordsForUser (req, res) {
     if(user) {
         const userData = await db.collection("registers").find({userId: user._id}).toArray();
         const filteredUserData = userData.map(({_id, userId, ...data}) => {return data});
-        
-        res.status(200).send(filteredUserData);
+        let total = 0;
+
+        for(let i = 0; i < filteredUserData.length; i++){
+            if(filteredUserData[i].type === 'entrada'){
+                total += parseFloat(filteredUserData[i].value.replace(/,/g, '.'));
+            }else{
+                total -= parseFloat(filteredUserData[i].value.replace(/,/g, '.'));
+            }
+        }
+        console.log("Valor total: ", total.toFixed(2));
+        res.status(200).send({userData: filteredUserData, total});
     } else {
         res.sendStatus(401);
     }
